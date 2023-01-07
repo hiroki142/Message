@@ -5,22 +5,12 @@ from log_msgs.msg import Log
 
 class Talker():
     def __init__(self, node):
-        self.pub = node.create_publisher(Log, "message", 10) 
-        node.create_timer(0.01, self.cb)
-        self.cb
+        self.pub = node.create_publisher(Log, "message", 10)
+        self.sub = node.create_subscription(Log, "input", self.cb, 10)
 
-    def cb(self):
-        
-        self.n = input('Enter your message\n:')
-
-        msg = Log()
-        msg.log = self.n
+    def cb(self,msg):
         msg.time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
-        
-        if self.n != '\n':
-            self.pub.publish(msg)
-
-        self.n = '\n'
+        self.pub.publish(msg)
 
 def main():
     rclpy.init()
